@@ -8,6 +8,7 @@ router.get("/register", (req, res) => {
   res.render("users/register");
 });
 
+//sirve para registrarse como un nuevo usuario donde colocarás email, username y password. El password tambien ya vendrá hasheado
 router.post(
   "/register",
   catchAsync(async (req, res) => {
@@ -24,6 +25,8 @@ router.post(
   })
 );
 
+//aqui iniciarás sesion, autenticando con el método .authenticate, y la estrategia local, que  implica verificar un nombre de usuario y contraseña almacenados en la base de datos.
+
 router.get("/login", (req, res) => {
   res.render("users/login");
 });
@@ -39,5 +42,17 @@ router.post(
     res.redirect("/campgrounds");
   }
 );
+
+//permitirá cerrar sesion
+
+router.get("/logout", (req, res) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    req.flash("success", "Goodbye!");
+    res.redirect("/campgrounds");
+  });
+});
 
 module.exports = router;
