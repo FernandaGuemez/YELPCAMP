@@ -44,6 +44,7 @@ router.post(
 );
 
 //permitirá cerrar sesion
+//aqui se requeire pasar una funcion para que el método .logout funcione
 
 router.get("/logout", (req, res) => {
   req.logout(function (err) {
