@@ -11,13 +11,17 @@ router.get("/register", (req, res) => {
 //sirve para registrarse como un nuevo usuario donde colocarás email, username y password. El password tambien ya vendrá hasheado
 router.post(
   "/register",
-  catchAsync(async (req, res) => {
+  catchAsync(async (req, res, next) => {
     try {
       const { email, username, password } = req.body;
       const user = new User({ email, username });
       const registeredUser = await User.register(user, password);
-      req.flash("success", "Welcome to Yelp Camp!");
-      res.redirect("/campgrounds");
+      //en esta parte vamos a hacer que cuando te registres ya no te tengas que logear de nuevo en las partes donde te pide que inicies sesion como en la creacion de un nuevo camprgound, usando un metodo req.login de password
+      req.login(registeredUser, (err) => {
+        if (err) return next(err);
+        req.flash("success", "Welcome to Yelp Camp!");
+        res.redirect("/campgrounds");
+      });
     } catch (e) {
       req.flash("error", e.message);
       res.redirect("register");
