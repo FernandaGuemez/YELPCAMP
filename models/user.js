@@ -14,4 +14,4 @@ const UserSchema = new Schema({
 // y esto me sirve para la AUTENTIFICACION:
 UserSchema.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model("USer", UserSchema);
+module.exports = mongoose.model("User", UserSchema);
