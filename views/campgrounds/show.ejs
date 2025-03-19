@@ -15,6 +15,7 @@
         </li>
         <li class="list-group-item">$ <%= campground.price%>/night</li>
       </ul>
+      <!-- esta parte sirve para mostrar y esconder el edit y delete -->
       <% if(currentUser && campground.author.equals(currentUser._id)) { %>
       <div class="card-body">
         <a
