@@ -3,7 +3,7 @@ const ExpressError = require("./utils/ExpressError.js");
 const Campground = require("./models/campground");
 
 module.exports.isLoggedIn = (req, res, next) => {
-  //metodo que te permite autentificar al usuario y poder ingresar si está registrado o no para crear un nuevo campground*/
+  // isAuthenticated es el metodo que te permite autentificar al usuario y poder ingresar si está registrado o no para crear un nuevo campground*/
   if (!req.isAuthenticated()) {
     req.session.returnTo = req.originalUrl; // aqui se guarda el link original
     req.flash("error", "You must be signed in first!");
