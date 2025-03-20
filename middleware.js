@@ -1,7 +1,7 @@
 const { campgroundSchema, reviewSchema } = require("./schemas.js");
 const ExpressError = require("./utils/ExpressError.js");
 const Campground = require("./models/campground");
-
+const Review = require("./models/review.js");
 module.exports.isLoggedIn = (req, res, next) => {
   // isAuthenticated es el metodo que te permite autentificar al usuario y poder ingresar si está registrado o no para crear un nuevo campground*/
   if (!req.isAuthenticated()) {
@@ -34,6 +34,16 @@ module.exports.isAuthor = async (req, res, next) => {
   const { id } = req.params;
   const campground = await Campground.findById(id);
   if (!campground.author.equals(req.user._id)) {
+    req.flash("error", "You do not have permission to do that!");
+    return res.redirect(`/campgrounds/${id}`);
+  }
+  next();
+};
+
+module.exports.isReviewAuthor = async (req, res, next) => {
+  const { id, reviewId } = req.params;
+  const review = await Review.findById(reviewId);
+  if (!review.author.equals(req.user._id)) {
     req.flash("error", "You do not have permission to do that!");
     return res.redirect(`/campgrounds/${id}`);
   }
