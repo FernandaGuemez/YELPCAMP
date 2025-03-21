@@ -10,23 +10,31 @@ const {
 
 const Campground = require("../models/campground");
 
-// campground index, va a encontrar todos los campgrounds,es decir con toda la base de datos que tenemos de los campgrounds:
-// el campgroundCs.index proviene del archivo controllers que representa el patron  MVC(MODELO VISTA CONTROLADOR)
-router.get("/", catchAsync(campgrounds.index));
+router
+  .route("/") // campground index, va a encontrar todos los campgrounds,es decir con toda la base de datos que tenemos de los campgrounds:
+  // el campgroundCs.index proviene del archivo controllers que representa el patron  MVC(MODELO VISTA CONTROLADOR)
+  .get(catchAsync(campgrounds.index))
+  //Crear un nuevo campground:
+  .post(
+    isLoggedIn,
+    validateCampground,
+    catchAsync(campgrounds.createCampground)
+  );
 
 //Renderizas un nuevo campground:
 router.get("/new", isLoggedIn, campgrounds.renderNewForm);
 
-//Crear un nuevo campground:
-router.post(
-  "/",
-  isLoggedIn,
-  validateCampground,
-  catchAsync(campgrounds.createCampground)
-);
-
-// (SHOW) mostrar el campground:
-router.get("/:id", catchAsync(campgrounds.showCampground));
+router
+  .route("/:id")
+  // (SHOW) mostrar el campground:
+  .get(catchAsync(campgrounds.showCampground))
+  .put(
+    isLoggedIn,
+    isAuthor,
+    validateCampground,
+    catchAsync(campgrounds.updateCampground)
+  )
+  .delete(isLoggedIn, isAuthor, catchAsync(campgrounds.deleteCampground));
 
 // Editar y actualizar los campgrounds:
 router.get(
@@ -34,21 +42,6 @@ router.get(
   isLoggedIn,
   isAuthor,
   catchAsync(campgrounds.renderEditForm)
-);
-
-router.put(
-  "/:id",
-  isLoggedIn,
-  isAuthor,
-  validateCampground,
-  catchAsync(campgrounds.updateCampground)
-);
-
-router.delete(
-  "/:id",
-  isLoggedIn,
-  isAuthor,
-  catchAsync(campgrounds.deleteCampground)
 );
 
 module.exports = router;
