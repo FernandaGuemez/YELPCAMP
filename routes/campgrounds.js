@@ -24,10 +24,10 @@ router
     validateCampground,
     catchAsync(campgrounds.createCampground)
   );
-// .post(upload.array("image"), (req, res) => {
-//   console.log(req.body, req.files);
-//   res.send("IT WORKED!?");
-// });
+// // .post(upload.array("image"), (req, res) => {
+// console.log(req.body, req.files);
+// //   res.send("IT WORKED!?");
+// // });
 
 //Renderizas un nuevo campground:
 router.get("/new", isLoggedIn, campgrounds.renderNewForm);
@@ -36,6 +36,7 @@ router
   .route("/:id")
   // (SHOW) mostrar el campground:
   .get(catchAsync(campgrounds.showCampground))
+
   .put(
     isLoggedIn,
     isAuthor,
