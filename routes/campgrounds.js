@@ -17,16 +17,17 @@ router
   .route("/") // campground index, va a encontrar todos los campgrounds,es decir con toda la base de datos que tenemos de los campgrounds:
   // el campgroundCs.index proviene del archivo controllers que representa el patron  MVC(MODELO VISTA CONTROLADOR)
   .get(catchAsync(campgrounds.index))
-  //Crear un nuevo campground:
-  // .post(
-  //   isLoggedIn,
-  //   validateCampground,
-  //   catchAsync(campgrounds.createCampground)
-  // );
-  .post(upload.array("image"), (req, res) => {
-    console.log(req.body, req.files);
-    res.send("IT WORKED!?");
-  });
+  // Crear un nuevo campground:
+  .post(
+    isLoggedIn,
+    upload.array("image"),
+    validateCampground,
+    catchAsync(campgrounds.createCampground)
+  );
+// .post(upload.array("image"), (req, res) => {
+//   console.log(req.body, req.files);
+//   res.send("IT WORKED!?");
+// });
 
 //Renderizas un nuevo campground:
 router.get("/new", isLoggedIn, campgrounds.renderNewForm);
