@@ -1,4 +1,6 @@
 const Campground = require("../models/campground");
+const maptilerClient = require("@maptiler/client");
+maptilerClient.config.apiKey = process.env.MAPTILER_API_KEY;
 const { cloudinary } = require("../cloudinary");
 
 // campground index,
@@ -14,7 +16,12 @@ module.exports.renderNewForm = (req, res) => {
 
 //Crear un nuevo campground:
 module.exports.createCampground = async (req, res, next) => {
+  const geoData = await maptilerClient.geocoding.forward(
+    req.body.campground.location,
+    { limit: 1 }
+  );
   const campground = new Campground(req.body.campground);
+  campground.geometry = geoData.features[0].geometry;
   // en esta parte hacemos que los archivos se suban con multer y cloudinary*/
   campground.images = req.files.map((f) => ({
     url: f.path,
@@ -22,7 +29,7 @@ module.exports.createCampground = async (req, res, next) => {
   }));
   campground.author = req.user._id;
   await campground.save();
-  // console.log(campground.images);
+  console.log(campground);
   req.flash("success", "Successfully made a new campground!");
   res.redirect(`/campgrounds/${campground._id}`);
 };
@@ -37,6 +44,7 @@ module.exports.showCampground = async (req, res) => {
     return res.redirect("/campgrounds");
   }
   res.render("campgrounds/show", { campground });
+  console.log(campground);
 };
 
 // Editar y actualizar los campgrounds:
@@ -58,6 +66,11 @@ module.exports.updateCampground = async (req, res) => {
   const campground = await Campground.findByIdAndUpdate(id, {
     ...req.body.campground,
   });
+  const geoData = await maptilerClient.geocoding.forward(
+    req.body.campground.location,
+    { limit: 1 }
+  );
+  campground.geometry = geoData.features[0].geometry;
   const imgs = req.files.map((f) => ({
     url: f.path,
     filename: f.filename,
